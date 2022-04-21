@@ -38,7 +38,7 @@ function selectImg(event) {
   }
 
   onImgClick(event.target.dataset.source);
-}
+};
 
 // 3. Підключення скрипту і стилів бібліотеки модального вікна basicLightbox.
 // Використовуй CDN сервіс jsdelivr і додай у проект посилання на мініфіковані(.min) файли бібліотеки.
@@ -47,17 +47,29 @@ function selectImg(event) {
 
 // 4. Відкриття модального вікна по кліку на елементі галереї. Для цього ознайомся з документацією і прикладами.
 // 5. Заміна значення атрибута src елемента <img> в модальному вікні перед відкриттям. Використовуй готову розмітку модального вікна із зображенням з прикладів бібліотеки basicLightbox.
+// 6. Додай закриття модального вікна після натискання клавіші Escape. Зроби так, щоб прослуховування клавіатури було тільки доти, доки відкрите модальне вікно. Бібліотекаи basicLightbox містить метод для програмного закриття модального вікна.
+
+let instance;
 
 function onImgClick(source) {
-  const instance = basicLightbox.create(`<img src="${source}">`).show();
-}
+  instance = basicLightbox.create(`<img src="${source}">`, {
+    onShow: () => {
+      window.addEventListener("keydown", onEskPress);
+    },
+    onClose: () => {
+      window.removeEventListener("keydown", onEskPress);
+    },
+  });
 
-//   if (instance) {
-//     window.addEventListener("keydown", onEskPress);
-//   } else {
-//     window.removeEventListener("keydown", onEskPress);
-//   }
+  instance.show();
+};
 
-// function onEskPress(event) {
-//   console.log(event);
-// }
+function onEskPress(event) {
+  const ESC_KEY = "Escape";
+
+  if (event.code === ESC_KEY) {
+    instance.close();
+  }
+
+  console.log(event);
+};
